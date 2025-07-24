@@ -56,7 +56,7 @@ USER_PROMISES_TMPL = """
 DATA_DIR = os.path.join("data", "promise_keeper_ai")
 PROMISES_FILE = os.path.join(DATA_DIR, "promises.json")
 
-@register("PromiseKeeperAI", "YourName", "由AI驱动的承诺记录器", "2.1.1") # 修复LLM JSON解析
+@register("PromiseKeeperAI", "YourName", "由AI驱动的承诺记录器", "2.1.2") # 修复LLM JSON解析
 class PromiseKeeperPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
@@ -105,7 +105,7 @@ class PromiseKeeperPlugin(Star):
                     if not promise.get('reminded', False) and promise.get('due_timestamp', 0) and promise['due_timestamp'] <= now_ts:
                         try:
                             at_user = Comp.At(qq=promise['user_id']); reminder_text = Comp.Plain(f" 喂！你之前承诺的 “{promise['content']}” 时间到啦！")
-                            await self.context.send_message(promise['unified_origin'], MessageChain([at_user, reminder_text]))
+                            await self.context.send_message(promise['unified_msg_origin'], MessageChain([at_user, reminder_text]))
                         except Exception as send_error:
                             logger.warning(f"言而有信[AI]: 发送到期提醒失败（用户可能已退群）: {send_error}")
                         promise['reminded'] = True; needs_saving = True; continue
@@ -116,7 +116,7 @@ class PromiseKeeperPlugin(Star):
                     if not promise.get('halfway_reminded', False) and now_ts >= halfway_point_ts:
                         try:
                             at_user = Comp.At(qq=promise['user_id']); reminder_text = Comp.Plain(f" 提醒一下，你承诺的 “{promise['content']}” 时间已经过半咯！")
-                            await self.context.send_message(promise['unified_origin'], MessageChain([at_user, reminder_text]))
+                            await self.context.send_message(promise['unified_msg_origin'], MessageChain([at_user, reminder_text]))
                         except Exception as send_error:
                             logger.warning(f"言而有信[AI]: 发送中点提醒失败（用户可能已退群）: {send_error}")
                         promise['halfway_reminded'] = True; needs_saving = True
@@ -143,7 +143,7 @@ class PromiseKeeperPlugin(Star):
         prediction = self.detector.predict(text=message_text, context=nn_context)
         logger.debug(f"言而有信[NN] 预判: '{message_text}' -> {prediction}")
         
-        if not (prediction["label_name"] == "Promise" and prediction["confidence"] > 0.8): return
+        if not (prediction["label_name"] == "Promise" and prediction["confidence"] > 0.85): return
 
         llm = self.context.get_using_provider()
         if not llm: logger.warning("言而有信[AI]: NN检测到可能承诺，但未找到可用LLM进行确认。"); return

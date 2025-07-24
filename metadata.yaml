@@ -1,14 +1,14 @@
 id: astrbot_plugin_promise_keeper
 name: 言而有信
-author: xunxiing # <-- 请务必修改为您的名字
-version: 2.2.0 # <-- 版本升级
-description: > # 使用 > 可以方便地写多行描述
+author: xunxiing 
+version: 2.1.2 
+description: > 
   自动记录聊天中的承诺并到期提醒。
   功能：
   - /言而有信排行：用图片展示承诺次数排行榜。
   - /言而有信 [@某人]：用图片展示自己或@用户的承诺列表。
   - 承诺到期前会进行一次中点提醒。
-repo: https://github.com/YourName/astrabot_plugin_promise_keeper # <-- 请修改为您的插件仓库地址
+repo: https://github.com/xunxiing/astrbot_plugin_promise_keeper.git 
 tags:
   - 工具
   - 提醒
